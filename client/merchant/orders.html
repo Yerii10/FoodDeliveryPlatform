@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>订单队列 - 商家</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+<div class="container">
+  <div class="flex" style="justify-content:space-between;">
+    <h1>订单队列</h1>
+    <a href="dashboard.html"><button class="secondary">返回</button></a>
+  </div>
+  <div class="right">
+    <button id="refresh">刷新</button>
+  </div>
+  <div id="orders"></div>
+</div>
+
+<script src="../js/auth.js"></script>
+<script>
+const session = requireLogin("merchant");
+if (!session) throw new Error();
+
+async function loadOrders() {
+  const mid = localStorage.getItem("user_id");
+  const res = await fetch(`${API}/order/merchant/${mid}`);
+  const data = await res.json();
+  const box = document.getElementById("orders");
+  box.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    box.innerHTML = "<p>暂无订单</p>";
+    return;
+  }
+
+  data.forEach(o => {
+    const items = o.items.map(it => `${it.name}×${it.quantity}`).join("，");
+    const courier = o.deliveryman || "未分配";
+
+    let statusText = "待制作";
+    if (o.status === "ready") statusText = "等待配送员接单";
+    if (o.status === "delivering") statusText = "配送中";
+    if (o.status === "done") statusText = "已完成";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="flex" style="justify-content:space-between;">
+        <h3>订单号：${o.order_no}</h3>
+        <span class="badge">${statusText}</span>
+      </div>
+      <div class="mt">用户：${o.user}</div>
+      <div class="mt">配送员：${courier}</div>
+      <div class="mt">总价：￥${o.total_price.toFixed(2)}</div>
+      <div class="mt">明细：${items}</div>
+      <div class="mt right ${(o.status !== 'pending') ? 'hide' : ''}">
+        <button data-no="${o.order_no}">标记完成</button>
+      </div>
+    `;
+    box.appendChild(card);
+  });
+
+  [...box.querySelectorAll("button[data-no]")].forEach(btn => {
+    btn.onclick = async () => {
+      const no = btn.dataset.no;
+      const res = await fetch(`${API}/order/${no}/ready`, { method: "PUT" });
+      const data = await res.json();
+      if (data.error) { alert(data.error); return; }
+      await loadOrders();
+    };
+  });
+}
+
+document.getElementById("refresh").onclick = loadOrders;
+loadOrders();
+</script>
+</body>
+</html>

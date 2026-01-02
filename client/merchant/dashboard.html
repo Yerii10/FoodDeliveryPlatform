@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>商家后台 - 点餐系统</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* ✅ 简单的图片样式 */
+    .dish-img {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="flex" style="justify-content:space-between;">
+    <h1>商家后台</h1>
+    <div class="flex">
+      <a href="../login.html"><button class="secondary">退出</button></a>
+      <a href="orders.html"><button>订单队列</button></a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>添加菜品</h3>
+    <div class="row">
+      <div class="col"><input id="name" placeholder="菜名"></div>
+      <div class="col"><input id="price" type="number" placeholder="价格"></div>
+    </div>
+    <div class="row mt">
+      <div class="col"><input id="image_url" placeholder="图片URL(可选)"></div>
+      <div class="col"><input id="desc" placeholder="描述(可选)"></div>
+    </div>
+    <div class="mt"><button id="add">添加</button></div>
+    <!-- ✅ 新增预览框 -->
+    <div id="preview" class="mt"></div>
+  </div>
+
+  <div class="card">
+    <h3>我的菜品</h3>
+    <div id="dishes" class="grid"></div>
+  </div>
+</div>
+
+<script src="../js/auth.js"></script>
+<script>
+const session = requireLogin("merchant");
+if (!session) throw new Error();
+
+// ✅ 输入 URL 时实时显示预览
+const imageInput = document.getElementById("image_url");
+const previewBox = document.getElementById("preview");
+
+imageInput.addEventListener("input", () => {
+  const url = imageInput.value.trim();
+  if (url) {
+    previewBox.innerHTML = `<img src="${url}" alt="预览" class="dish-img" onerror="this.style.display='none'">`;
+  } else {
+    previewBox.innerHTML = "";
+  }
+});
+
+async function addDish() {
+  const payload = {
+    merchant_id: Number(localStorage.getItem("user_id")),
+    name: document.getElementById("name").value.trim(),
+    price: parseFloat(document.getElementById("price").value),
+    image_url: document.getElementById("image_url").value.trim(),
+    description: document.getElementById("desc").value.trim(),
+  };
+  const res = await fetch(`${API}/merchant/add_dish`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (data.error) { alert(data.error); return; }
+  alert("添加成功");
+  await loadDishes();
+  document.getElementById("name").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("image_url").value = "";
+  document.getElementById("desc").value = "";
+  previewBox.innerHTML = "";
+}
+
+async function loadDishes() {
+  const mid = localStorage.getItem("user_id");
+  const res = await fetch(`${API}/merchant/${mid}/dishes`);
+  const list = await res.json();
+  const box = document.getElementById("dishes");
+  box.innerHTML = "";
+  if (!list || list.length === 0) {
+    box.innerHTML = "<p>暂无菜品</p>";
+    return;
+  }
+  list.forEach(d => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h4>${d.name}</h4>
+      <div class="mt">￥${d.price}</div>
+      <div class="mt">${d.description || ""}</div>
+      ${d.image_url ? `<img src="${d.image_url}" alt="${d.name}" class="dish-img" onerror="this.style.display='none'">` : ""}
+    `;
+    box.appendChild(div);
+  });
+}
+
+document.getElementById("add").onclick = addDish;
+loadDishes();
+</script>
+</body>
+</html>

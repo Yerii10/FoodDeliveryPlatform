@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>注册 - 点餐系统</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="container">
+  <h1>注册</h1>
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label>账号</label>
+        <input id="username" placeholder="输入账号" />
+      </div>
+      <div class="col">
+        <label>密码</label>
+        <input id="password" type="password" placeholder="输入密码" />
+      </div>
+    </div>
+
+    <div class="row mt">
+      <div class="col">
+        <label>用户类型</label>
+        <select id="role">
+          <option value="user">客户</option>
+          <option value="merchant">商家</option>
+          <option value="courier">外卖员</option>
+        </select>
+      </div>
+      <div class="col" id="shopField">
+        <label>商铺名称（仅商家填写）</label>
+        <input id="shop_name" placeholder="如：小王的店" />
+      </div>
+    </div>
+
+    <div class="mt flex">
+      <button id="registerBtn">注册</button>
+      <a href="login.html"><button class="secondary">返回登录</button></a>
+    </div>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+const roleSelect = document.getElementById("role");
+const shopField = document.getElementById("shopField");
+
+// 当角色选择变化时动态隐藏/显示店铺输入框
+roleSelect.addEventListener("change", () => {
+  if (roleSelect.value === "merchant") {
+    shopField.style.display = "block";
+  } else {
+    shopField.style.display = "none";
+    document.getElementById("shop_name").value = "";
+  }
+});
+
+// 默认隐藏非商家输入框
+if (roleSelect.value !== "merchant") {
+  shopField.style.display = "none";
+}
+
+document.getElementById('registerBtn').onclick = async () => {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const role = document.getElementById("role").value;
+  const shop_name = document.getElementById("shop_name").value.trim();
+
+  if (!username || !password) {
+    alert("请输入账号和密码");
+    return;
+  }
+
+  if (role === "merchant" && !shop_name) {
+    alert("商家请填写店铺名称");
+    return;
+  }
+
+  const payload = { username, password, role, shop_name };
+  const res = await fetch(`${API}/auth/register`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+  if (data.error) {
+    alert(data.error);
+  } else {
+    alert("注册成功，请返回登录");
+    window.location.href = "login.html";
+  }
+};
+</script>
+</body>
+</html>

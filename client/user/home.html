@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>用户主页 - 点餐系统</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+<div class="container">
+  <div class="flex" style="justify-content:space-between;">
+    <h1>欢迎，<span id="uname"></span></h1>
+    <a href="../login.html"><button class="secondary">退出</button></a>
+  </div>
+
+  <div class="card">
+    <h3>我的钱包</h3>
+    <div class="flex">
+      <div>余额：<span id="balance" class="badge">0.00</span> 元</div>
+      <input id="depositAmount" type="number" placeholder="输入充值金额" />
+      <button id="btnDeposit">充值</button>
+      <a href="orders.html"><button class="secondary">查看我的订单</button></a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>商家列表</h3>
+    <div id="merchants" class="grid"></div>
+  </div>
+</div>
+
+<script src="../js/auth.js"></script>
+<script>
+const session = requireLogin("user");
+if (!session) throw new Error();
+
+document.getElementById("uname").innerText = localStorage.getItem("username") || "";
+
+async function loadMerchants() {
+  const res = await fetch(`${API}/merchant`);
+  const data = await res.json();
+  const box = document.getElementById("merchants");
+  box.innerHTML = "";
+  if (!data || data.length === 0) {
+    box.innerHTML = "<p>还没有商家入驻</p>";
+    return;
+  }
+  data.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h4>${m.shop_name}</h4>
+      <div class="right"><a href="menu.html?merchant_id=${m.id}"><button>进入菜单</button></a></div>
+    `;
+    box.appendChild(div);
+  });
+}
+
+document.getElementById("btnDeposit").onclick = async () => {
+  const amount = parseFloat(document.getElementById("depositAmount").value);
+  if (!amount || amount <= 0) { alert("请输入正确金额"); return; }
+  const uid = localStorage.getItem("user_id");
+  const res = await fetch(`${API}/user/${uid}/deposit?amount=${amount}`, { method: "PUT" });
+  const data = await res.json();
+  if (data.error) { alert(data.error); return; }
+  await refreshBalance();
+  document.getElementById("depositAmount").value = "";
+  alert("充值成功");
+};
+
+refreshBalance();
+loadMerchants();
+</script>
+</body>
+</html>
