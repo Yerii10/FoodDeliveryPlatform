@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from ..database import get_db
 from ..models import User, Dish
+from ..schemas import DishCreate, DishOut
 
 router = APIRouter(prefix="/merchant", tags=["Merchants"])
 

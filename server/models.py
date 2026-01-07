@@ -19,3 +19,15 @@ class Dish(Base):
     price = Column(Float, nullable=False)
     image_url = Column(String(255), nullable=True)
     description = Column(String(255), nullable=True)
+
+
+class Order(Base):
+    __tablename__ = "orders"
+    id = Column(Integer, primary_key=True, index=True)
+    order_no = Column(String(32), unique=True, index=True, nullable=False)
+    user_id = Column(Integer, index=True, nullable=False)
+    merchant_id = Column(Integer, index=True, nullable=False)
+    delivery_id = Column(Integer, index=True, nullable=True)  # 外卖员ID
+    items = Column(Text, nullable=False)  # JSON: [{dish_id,name,quantity,price},...]
+    total_price = Column(Float, nullable=False)
+    status = Column(String(20), default="pending")  # pending / ready / delivering / done
