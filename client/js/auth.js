@@ -27,7 +27,7 @@ async function login() {
 
   saveSession(data);
 
-  // ✅ 登录后根据角色跳转
+  // 登录后根据角色跳转
   if (data.role === "merchant") {
     location.href = "merchant/dashboard.html";
   } else if (data.role === "courier") {

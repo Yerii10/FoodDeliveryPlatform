@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine
-from .routers import auth, users, merchants, orders, couriers  # ✅ 新增
+from .routers import auth, users, merchants, orders, couriers  #  新增
 
 app = FastAPI(title="Food Order System")
 
@@ -21,7 +21,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(merchants.router)
 app.include_router(orders.router)
-app.include_router(couriers.router)  # ✅ 新增
+app.include_router(couriers.router)  #  新增
 
 @app.get("/")
 def root():

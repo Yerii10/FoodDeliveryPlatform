@@ -6,7 +6,7 @@ async function loadOrders() {
   try {
     const res = await fetch(`${apiBase}/order/user/${userId}`);
     const data = await res.json();
-    console.log("订单数据:", data); // ✅ 调试输出
+    console.log("订单数据:", data); // 调试输出
     renderOrders(data);
   } catch (err) {
     console.error("加载订单失败:", err);
@@ -31,7 +31,7 @@ function renderOrders(orders) {
       .map(i => `${i.name} × ${i.quantity}（￥${i.price}）`)
       .join("<br>");
 
-    // ✅ 商家名称显示
+    // 商家名称显示
     const merchantName = o.merchant_name ? o.merchant_name : "未命名商家";
 
     orderDiv.innerHTML = `
