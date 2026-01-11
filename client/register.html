@@ -6,39 +6,41 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-<div class="container">
-  <h1>注册</h1>
-  <div class="card">
-    <div class="row">
-      <div class="col">
-        <label>账号</label>
-        <input id="username" placeholder="输入账号" />
-      </div>
-      <div class="col">
-        <label>密码</label>
-        <input id="password" type="password" placeholder="输入密码" />
-      </div>
+
+<div class="login-page">
+  <div class="login-card">
+    <h1 class="title">点餐系统</h1>
+    <p class="subtitle">创建新账号</p>
+
+    <div class="form-group">
+      <label>账号</label>
+      <input id="username" placeholder="输入账号" />
     </div>
 
-    <div class="row mt">
-      <div class="col">
-        <label>用户类型</label>
-        <select id="role">
-          <option value="user">客户</option>
-          <option value="merchant">商家</option>
-          <option value="courier">外卖员</option>
-        </select>
-      </div>
-      <div class="col" id="shopField">
-        <label>商铺名称（仅商家填写）</label>
-        <input id="shop_name" placeholder="如：小王的店" />
-      </div>
+    <div class="form-group">
+      <label>密码</label>
+      <input id="password" type="password" placeholder="输入密码" />
     </div>
 
-    <div class="mt flex">
-      <button id="registerBtn">注册</button>
-      <a href="login.html"><button class="secondary">返回登录</button></a>
+    <div class="form-group">
+      <label>用户类型</label>
+      <select id="role">
+        <option value="user">客户</option>
+        <option value="merchant">商家</option>
+        <option value="courier">外卖员</option>
+      </select>
     </div>
+
+    <div class="form-group" id="shopField">
+      <label>商铺名称（仅商家填写）</label>
+      <input id="shop_name" placeholder="如：小王的店" />
+    </div>
+
+    <button id="registerBtn" class="btn-primary">注册</button>
+
+    <a href="login.html" class="register-link">
+      ← 返回登录
+    </a>
   </div>
 </div>
 
