@@ -1,13 +1,13 @@
-# 🍔 Food Order System — 三端一体化智能点餐平台
+# 🍔 Food Delivery Platform — 三端一体化智能点餐平台
 
-**Food Order System** 是一个基于 **FastAPI + HTML/CSS/JavaScript** 的三端协同点餐系统，面向多角色业务场景，支持 **用户端（顾客）**、**商家端（餐厅）**、**配送员端（骑手）** 三方协作，实现从点单、备餐、配送到收货的完整闭环流程。  
+**Food Delivery Platform** 是一个基于 **FastAPI + HTML/CSS/JavaScript** 的三端协同点餐系统，面向多角色业务场景，支持 **用户端（顾客）**、**商家端（餐厅）**、**配送员端（骑手）** 三方协作，实现从点单、备餐、配送到收货的完整闭环流程。  
 系统采用 **模块化设计、分层结构、接口驱动开发模式**，具备良好的 **可维护性、可扩展性与用户体验**。
 
 ---
 
 ## 🏗️ 系统结构概览
 ```plaintext
-FoodOrderSystem/
+FoodDeliveryPlatform/
 │
 ├── .venv/                          # 虚拟环境目录（Python 依赖环境）
 │
@@ -112,8 +112,8 @@ FoodOrderSystem/
 ### 1️⃣ 克隆项目仓库
 
 ```bash
-git clone https://github.com/Yerii10/FoodOrderSystem.git
-cd FoodOrderSystem
+git clone https://github.com/Yerii10/FoodDeliveryPlatform.git
+cd FoodDeliveryPlatform
 ```
 
 ### 2️⃣ 创建并激活虚拟环境

@@ -9,5 +9,4 @@ def verify_password(raw: str, hashed: str) -> bool:
     return pwd_context.verify(raw, hashed)
 
 def make_pseudo_token(user_id: int, role: str) -> str:
-    # 简单演示用，真实生产要使用 JWT
     return f"TOKEN|{user_id}|{role}"
